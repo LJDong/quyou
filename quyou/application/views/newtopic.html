@@ -1,0 +1,28 @@
+<div class="container">
+	<div class="col-md-8 col-xs-8 col-sm-8" id="newaritcle">
+	<div class="line"></div>
+	<div><a name="comment"><span style="font-size:3ex;color:#888888">发表新帖</span></a></div>
+	<input type='text' class='form-control' placeholder='帖子标题' id='title'>
+	<div class="line"></div>
+	<script id="container" name='content' type='text/plain'></script>
+	<div style="padding:5px;text-align:right"><button class="btn btn-default" id='submitbtn'>提交</button></div>
+	</div>
+</div>
+<script>
+$(document).ready(function(){
+	var ue = UE.getEditor('container');
+	$('#submitbtn').click(function(){
+		 var html = ue.getContent();
+		 var circle_id = '<?php echo $circle_id;?>';
+		 $.ajax({
+			 url:'/topic/newtopic',
+			 data:{title:$('#title').val(),content:html,circle_id:circle_id},
+			 type:'POST',
+			 dataType:'json',
+			 success:function(data){
+				 console.log(data);
+			 }
+		 });
+	});
+});
+</script>

@@ -1,0 +1,68 @@
+<script  src='/aplugin/js/jquery-1.12.2.js'></script>
+<style>
+.headerdiv{
+	background:transparent;
+	box-shadow:rgba(0,0,0,0.1) 0 1px 2px;
+	display:block;
+	position:relative;
+	z-index:10000;
+	width:100%
+	top:0;
+	height:42px;
+}
+.headerdiv ul,li{
+	list-style-type:none;
+	margin:0;
+	badding:0;
+}
+.headerdiv  li{
+	float:left;
+	position:relative;
+	text-align:center;
+	margin-left:-10px;
+	line-height:42px;
+}
+
+.headerdiv a{
+	text-decoration:none;
+	padding:0 0 0 20px;
+	font-size:16px;
+}
+.menudiv{
+	float:left;
+	margin-left:5%;
+}
+.userdiv{
+	float:right;
+	margin-right:5%;
+}
+.userloginul{
+	display:none;
+}
+.headerdiv  span{
+	font-family:"Microsoft YaHei",Arial,Helvetica,sans-serifsans-serif;
+}
+</style>
+<div id="headerdiv" class="headerdiv" >
+	<div id="menudiv" class="menudiv">
+	<ul id="menuul" class="menuul">
+		<li><a href=''><span>主页</span></a></li>
+		<li><a href=''><span>影视</span></a></li>
+		<li><a href=''><span>音乐</span></a></li>
+		<li><a href=''><span>读书</span></a></li>
+	</ul>
+	</div>
+	<div id="userdiv" class="userdiv">
+	<ul id="userul" class="userurl">
+		<li><a href='/quyouusers/tologin'><span>登录</span></a></li>
+		<li><a href='/quyouusers/toregister'><span>注册</span></a></li>
+	</ul>
+	<ul id="userloginul" class="userloginul">
+		<li><a><span id="username" name="username">....</span></a></li>
+		<li><a><span>消息</span></a></li>
+	</ul>
+	</div>
+</div>
+<script type="text/javascript">
+
+</script>

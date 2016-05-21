@@ -1,0 +1,56 @@
+<style>
+.mandiv{
+	margin-top:60px;
+}
+.title{
+	background:url(/aplugin/picture/t2.png) top center no-repeat;
+	margin-top:-30px;
+	float:left;
+	height:50px;
+	width:100%
+}
+<
+</style>
+<div id="formdiv" class="mandiv container">
+	<div class="line"></div>
+	<div class="title"></div>
+	<div class="col-md-6 col-md-offset-3">
+		<form id="loginform">
+			<div class="form-group">
+			<span>邮箱</span><input name="email" id="email"  type="text" class="form-control" placeholder="邮箱">
+			</div>
+			<div class="form-group">
+			<span>密码</span><input name="password" id="password" type="password" class="form-control" placeholder="密码">
+			</div>
+		</form>
+		<button id="submitbutton" class="btn btn-default">登陆</button>
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	$("#submitbutton").click(function(){
+		var loginurl = "/quyouusers/login";
+		$.ajax({
+			url:loginurl,
+			type:"POST",
+			dataType:'json',
+			data:$("#loginform").serialize(),
+			success:function(data){
+				if(data.error_code == 1)
+				{
+					console.log(data.reason);
+				}
+				else if(data.error_code == -1)
+				{
+					console.log(data.reason);
+				}
+				else
+				{
+					window.location.href='/';
+				}
+				console.log(data);
+			}
+		});
+	});
+});
+</script>

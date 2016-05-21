@@ -1,0 +1,70 @@
+<div class="container">
+		<div class="col-md-8  col-xs-8 col-sm-8" id='comments'>
+	    </div>
+	    <div class="col-md-8 col-xs-8 col-sm-8" style="height:400px;padding:20px;margin-bottom:40px" id="commtext">
+	    	<div class="line"></div>
+	    	<div><a name="comment"><span style="font-size:3ex;color:#888888">评论</span></a></div>
+	    	<script id="container" name="content" type="text/plain">
+	    	</script>
+	    	<div style="padding:5px;text-align:right"><button class="btn btn-default" id='submitbtn'>提交</button></div>
+	    </div>
+	    <div id="replypop" class="col-md-8 col-xs-8 col-sm-8" style="display:none;position:absolute;">
+		<div class="input-group">
+			<span class="input-group-addon">@</span>
+			<span class="input-group-addon" id='user_name_reply'></span>
+			<input class="form-control"  type="text" id="replyinput"> 
+			<span class="input-group-btn"><button class="btn btn-default" type="button" id='replybtn'>提交</button></span>
+		</div>
+		</div>
+</div>
+<div id="userpop" class="panel panel-default" style="width:400px;height:180px;margin: 0 auto;position:absolute;display:none;index-z:99999">
+	<div class="panel-body"  style="height:120px">
+	<div class="row">
+	<div class="col-md-3"><a href="###"><img src="/aplugin/picture/userlogo.png" style="width:84px;height:84px;"></a></div>
+	<div class="col-md-9"><a href="###"><span style="font-size:18px;font-weight:700">123</span></a></div>
+	<div class="col-md-9"><span class="warnspan"></span></div>
+	</div>
+	</div>
+	<div class="panel-footer " style="height:58px">
+		<div class="row">
+		<div class="col-md-5"><span>话题：</span><span></span></div>
+		<div class="col-md-3 col-md-offset-4"><button class="btn btn-default" id="sendmessage">私信</button></div>
+		</div>
+	</div>
+</div>
+<script>
+$(document).ready(function(){
+	var ue = UE.getEditor('container');
+	var topic_id = '';
+	$("#submitbtn").click(function(){
+		var submiturl='/comment/comment/'+topic_id;
+		$.ajax({
+			url:submiturl,
+			type:'post',
+			dataType:'json',
+			data:{comment:ue.getContent()},
+			success:function(data){
+				console.log(data);
+			}
+		});
+	});
+	var  getajax = $.ajax({
+		type:'POST',
+		url:'/topic/gettopic/'+topic_id,
+		dataType:'json',
+		data:{},
+		success:function(data){
+			console.log(data);
+			for(comment_seq in data)
+			{
+				$('#comments').append("<div id='comment"+comment_seq+"'></div>");
+				$('#comment'+comment_seq).createRP(data[comment_seq]);
+			}
+		}
+	});
+	$.when(getajax).then(function(){
+		getuser();
+		onreply();
+	});
+})
+</script>

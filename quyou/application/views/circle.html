@@ -1,0 +1,73 @@
+<div class="container">
+	<div class="col-md-8"   id="criclepanel"></div>
+	<div class="col-md-3 col-md-offser-1">
+		<div class="panel panel-default">
+			<div class="panel-body">
+			</div>
+		</div>
+	</div>
+</div>
+<div id='float_bar' class="float_bar">
+<ul>
+	<li class='float_bar_post'><a href='/topic/tonewtopic/3'></a></li>
+	<li class='float_bar_refresh'><a href='###'  id='float_bar_refresh_a'></a></li>
+	<li class='float_bar_top'><a href='#'></a></li>
+</ul>
+</div>
+<div id="userpop" class="panel panel-default" style="width:400px;height:180px;margin: 0 auto;position:absolute;display:none;index-z:99999">
+	<div class="panel-body"  style="height:120px">
+	<div class="row">
+	<div class="col-md-3"><a href="###"><img src="/aplugin/picture/userlogo.png" style="width:84px;height:84px;"></a></div>
+	<div class="col-md-9"><a href="###"><span style="font-size:18px;font-weight:700">123</span></a></div>
+	<div class="col-md-9"><span class="warnspan">121111111111111111111131231111111111111111111111111111111111111111111111111111111111111111111321321321678</span></div>
+	</div>
+	</div>
+	<div class="panel-footer " style="height:58px">
+		<div class="row">
+		<div class="col-md-5"><span>话题：</span><span></span></div>
+		<div class="col-md-3 col-md-offset-4"><button class="btn btn-default" id="sendmessage">私信</button></div>
+		</div>
+	</div>
+</div>
+<script>
+$(document).ready(function(){
+	var circle_id = '<?php echo $circle_id;?>';
+	var getajax = $.ajax({
+		url:'/topic/getmytopic/'+circle_id,
+		data:{},
+		type:"POST",
+		dataType:'json',
+		success:function(data){
+			for(obj in data){
+				$("#criclepanel").createTP(data[obj]);
+			}
+		}
+	});
+	$.when(getajax).then(function(){
+		getuser();
+	});
+	float_barfunc();
+	window.onbeforeunload = function(){
+	    var scrollPos;    
+	    if (typeof window.pageYOffset != 'undefined') {
+	        scrollPos = window.pageYOffset;
+	    }
+	    else if (typeof document.compatMode != 'undefined' &&
+	        document.compatMode != 'BackCompat') {
+	        scrollPos = document.documentElement.scrollTop;
+	    }
+	    else if (typeof document.body != 'undefined') {
+	        scrollPos = document.body.scrollTop;
+	    }
+	    document.cookie="scrollTop="+scrollPos; //存储滚动条位置到cookies中
+	}
+	window.onload = function()
+	{ 
+	    if(document.cookie.match(/scrollTop=([^;]+)(;|$)/)!=null){
+	        var arr=document.cookie.match(/scrollTop=([^;]+)(;|$)/); //cookies中不为空，则读取滚动条位置
+	        document.documentElement.scrollTop=parseInt(arr[1]);
+	        document.body.scrollTop=parseInt(arr[1]);
+	    }
+	}
+});
+</script>

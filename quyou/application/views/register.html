@@ -1,0 +1,126 @@
+
+<style>
+.mandiv{
+	margin-top:60px;
+}
+.title{
+	background:url(/aplugin/picture/t1.png) top center no-repeat;
+	margin-top:-30px;
+	float:left;
+	height:50px;
+	width:100%
+}
+</style>
+<div class="mandiv container">
+<div class="line"></div>
+<div class="title"></div>
+<div class="col-md-6 col-md-offset-3">
+<form action="/quyouusers/register" method="post"  id="submitform">
+<div class="form-group"><span>邮箱</span><input name="email" id="email" type="text" placeholder="邮箱" class="form-control"></div>
+<div class="form-group"><span>验证码</span><input name="capture" id="capture" type="text" class="form-control"><a href='###'  id='getemailcapture'>获取邮箱验证码</a></div>
+<div class="form-group"><span>昵称</span><input name="name" id="name" type="text" placeholder="昵称" class="form-control"></div>
+<div class="form-group"><span>密码</span><input name="password" id="password" type="password" placeholder="密码" class="form-control"></div>
+<div class="form-group"><span>确认密码</span><input name="repassword" id="repassword" type="password" placeholder="确认密码" class="form-control"></div>
+</form>
+<button  id="subbutton" class="btn btn-default">提交</button>
+</div>
+</div>
+<script type="text/javascript">
+var getemailurl = '/capture/getemailcapture';
+$(document).ready(function(){
+	$("#getemailcapture").click(function(){
+		var clickflag = false;
+		var reg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
+		var vemail = reg.test($("#email").val());
+		if(vemail == false)
+		{
+			alert("邮箱输入格式不正确");
+			return;
+		}
+		var verityemailurl = '/quyouusers/verityregister';
+		var verityemailajax = $.ajax({
+			url:verityemailurl,
+			type:'POST',
+			dataType:'json',
+			data:{email:$("#email").val()},
+			success:function(data){
+				clickflag = data.result.code;
+				if(data.result.code ==  false)
+				{
+					alert("该邮箱已被注册");
+					return;
+				}
+				console.log(data);
+			}
+		});
+		$.when(verityemailajax).then(function(){
+			if(clickflag == false){
+				return;
+			}
+			$.ajax({
+				url:getemailurl,
+				type:'POST',
+				dataType:'json',
+				data:{email:$('#email').val()},
+				success:function(data){
+					console.log(data);
+					if(data.error_code == true)
+					{
+						alert("获取成功，请查收");
+					}
+					else
+					{
+						alert("获取失败，请稍后在试");
+					}
+				}
+			});
+		});
+	});
+	$("#subbutton").click(function(){
+		var verityturl = '/capture/veritycapture';
+		var verityret = false;
+		var veritycapture = $.ajax({
+			url:verityturl,
+			type:"POST",
+			dataType:'json',
+			data:{capture:$("#capture").val()},
+			success:function(data){
+				console.log(data);
+				verityret = data.result.code;
+			}
+		});
+		$.when(veritycapture).then(function(){
+			var submiturl = '/quyouusers/register';
+			if(verityret != true)
+			{
+				alert("邮箱验证码不正确");
+				return;
+			}
+			if($("#name").val() == null  || $("#name").val() == '')
+			{
+				alert("昵称不能为空");
+				return;
+			}
+			if($("#password").val() == null || $("#password").val()== '')
+			{
+				alert("密码不能为空");
+				return;
+			}
+			if($("#password").val()  !=  $("#repassword").val())
+			{
+				alert("两次输入密码不一致");
+				return;
+			}
+			$.ajax({
+				url:submiturl,
+				type:"POST",
+				dataType:'HTML',
+				data:$("#submitform").serialize(),
+				success:function(data){
+					console.log(data);
+				}
+			});
+		});
+	});
+});
+</script>

@@ -1,0 +1,47 @@
+<div class="container">
+	<div class="col-md-8 col-xs-8 col-sm-8" id="newaritcle">
+	<div class="line"></div>
+	<div><a name="comment"><span style="font-size:3ex;color:#888888">创建新圈</span></a></div>
+	<input type='text' class='form-control' placeholder='新圈标题' id='title'>
+	<div class="line"></div>
+	<script id="container" name='content' type='text/plain'></script>
+	<div style="padding:5px;text-align:right"><button class="btn btn-default" id='submitbtn'>提交</button></div>
+	</div>
+</div>
+<script>
+$(document).ready(function(){
+	var ue = UE.getEditor('container');
+	$('#submitbtn').click(function(){
+		 var html = ue.getContent();
+		 $.ajax({
+			 url:'/circle/newcircle',
+			 data:{circle_name:$('#title').val(),circle_detail:html},
+			 type:'POST',
+			 dataType:'json',
+			 success:function(data){
+				 console.log(data);
+				 if(data.error_code == 0)
+			    {
+					 if(data.result == ture)
+					{
+						 
+					 }
+					 else
+					{
+						 
+					 }
+				}
+			    else if(data.error_code == -1)
+				{
+					 alert(data.reason);
+				 }
+				 else if(data.error_code == -2)
+				{
+					 console.log(123);
+					 alert(data.reason);
+				 }
+			 }
+		 });
+	});
+});
+</script>
