@@ -1,7 +1,7 @@
 <?php
 class circlefocusmodel extends CI_Model
 {
-    private $table ='circlefocus';
+    private $table ='circle_focus';
     public function __construct()
     {
         $this->load->database();
