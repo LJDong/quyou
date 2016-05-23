@@ -2,7 +2,7 @@
 class circle extends  CI_Controller{
     public function __construct()
     {
-        phpinfo();exit;
+        //phpinfo();exit;
         parent::__construct();
         $this->load->helper("url_helper");
         $this->load->library("session");
