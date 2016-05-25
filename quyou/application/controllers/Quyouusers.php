@@ -41,7 +41,7 @@ class quyouusers extends CI_Controller
         $email = trim($_POST["email"]);
         $name = trim($_POST["name"]);
         $password = trim($_POST["password"]);
-        $logo_url='quyou.com/aplugin/picture/userlogo.png';
+        $logo_url='/aplugin/picture/userlogo.png';
         $infoarr = array(
             'user_password'=>$password,
             'user_name'=>$name,

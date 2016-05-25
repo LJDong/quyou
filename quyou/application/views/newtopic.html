@@ -13,14 +13,35 @@ $(document).ready(function(){
 	var ue = UE.getEditor('container');
 	$('#submitbtn').click(function(){
 		 var html = ue.getContent();
+		 var imgurl = '';
+		 var reg = new RegExp("(<img.*src=\"\.*?\>)");
+		 var img = reg.exec(html);
+		 if(img == null)
+		{
+			 imgurl = '';
+		 }
+		 else
+		{
+			 reg = new RegExp('src=\"(.*?)\"');
+			 var url = reg.exec(img[0]);
+			 imgurl = url[1];
+		}
+		 var text = ue.getContentTxt();
 		 var circle_id = '<?php echo $circle_id;?>';
 		 $.ajax({
 			 url:'/topic/newtopic',
-			 data:{title:$('#title').val(),content:html,circle_id:circle_id},
+			 data:{title:$('#title').val(),content:html,circle_id:circle_id,contenttext:text,topic_firstimg:imgurl},
 			 type:'POST',
 			 dataType:'json',
 			 success:function(data){
-				 console.log(data);
+				 if(data.result = true)
+				{
+					 window.location.href='/circle/tocircle/'+circle_id;
+				 }
+				 else
+				{
+					 alert("发帖失败，请重试");
+				}
 			 }
 		 });
 	});

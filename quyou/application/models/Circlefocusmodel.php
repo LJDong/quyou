@@ -11,10 +11,18 @@ class circlefocusmodel extends CI_Model
         $ret = $this->db->insert($this->table,$arr);
         return $ret;
     }
+    public function delete($arr)
+    {
+        $this->db->where($arr[0],$arr[1].$arr[2],$arr[3]);
+        $ret = $this->db->delete($this->table);
+        return $ret;
+    }
     public function select($arr)
     {
         $this->db->where($arr[0],$arr[1]);
-        $query = $this->db->get($this->table);
+        $this->db->from($this->table);
+        $this->db->join("circle","circle.circle_id = circle_focus.cf_circle_id");
+        $query = $this->db->get();
         $arr = $query->result_array();
         return $arr;
     }

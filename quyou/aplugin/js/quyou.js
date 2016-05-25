@@ -13,8 +13,10 @@
 				return (function(){
 					console.log(args);
 					var topicurl = "/topic/totopicindex/"+args.topic_id;
-					var circleurl="/circle/tocircleindex/"+args.circle_id;
+					var circleurl="/circle/tocircle/"+args.circle_id;
 					var userurl="/quyouusers/tousers/"+args.user_id;
+					var topic_last_time = new Date(args.topic_last_time*1000);
+					topic_last_time = topic_last_time.toLocaleTimeString();
 					 var html = '<div class="panel panel-default"  id="panel'+args.topic_id+'">'
 											+'<div class="panel-header">'
 											+'<div class="row">'
@@ -27,19 +29,36 @@
 											+'</div>'
 											+'</div>'
 											+'<div class="panel-body">'
-											+'<div id="container">'
-											+args.topic_subcontent
-											+'</div>'
+											+'<div id="container">';
+					 if(args.topic_firstimg != '')
+					 {
+						 html  = html +'<div>'+args.topic_subcontent+'</div>'+'<a id="max_img'+args.topic_id+'" href="'+args.topic_firstimg+'"><img  src="'+args.topic_firstimg+'" style="width:30%;padding:1em"/></a>';
+					 }
+					 else
+					{
+						 html =html+args.topic_subcontent;
+					}
+					 html = html+'</div>'
 											+'</div>'
 											+'<div class="panel-footer" style="height:38px">'
 											+'<div class="row">'
 											+'<div class="col-md-1 col-xs-1 col-sm-1"><a href="'+topicurl+'" class="topicurl">进入</a></div>'	
 											+'<div class="col-md-2 col-xs-2 col-sm-2"><a href="'+topicurl+'" class="commenturl"><span id="commentnum">'+args.topic_num+'</span>条评论</a></div>'	
-											+'<div class="col-md-5 col-xs-5 col-sm-5  col-md-offset-4 col-xs-offset-4 col-sm-offset-4"  style="color:#989898"><span>最后回复时间：</span><span class="time">'+args.topic_lasttime+'</span></div>'	
+											+'<div class="col-md-5 col-xs-5 col-sm-5  col-md-offset-4 col-xs-offset-4 col-sm-offset-4"  style="color:#989898"><span>最后回复时间：</span><span class="time">'+topic_last_time+'</span></div>'	
 											+'</div>'		
 											+'</div>'	
 											+'</div>';
 						obj.append(html);
+						 if(args.topic_firstimg != '')
+						{
+							 $("#max_img"+args.topic_id).imgbox({
+								 'speedIn'		: 0,
+									'speedOut'		: 0,
+									'alignment'		: 'center',
+									'overlayShow'	: true,
+									'allowMultiple'	: false
+							 });
+						}
 				})();
 			},
 			bindEvent:function(obj,args){

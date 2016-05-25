@@ -12,7 +12,7 @@ class circlefocus extends CI_Controller{
         $user_id = $_SESSION['user_id'];
         if(isset($user_id))
         {
-            $this->circlefocusmodel->select(array('cf_user_id',$user_id));
+            $ret = $this->circlefocusmodel->select(array('cf_user_id',$user_id));
             $this->jsonreturn("查询成功", $ret, 0);
             exit;
         }
@@ -41,6 +41,15 @@ class circlefocus extends CI_Controller{
             exit;
         }
     }
+    public function cancelfocus()
+    {
+        $circle_id = $_POST['circle_id'];
+        $user_id = $_SESSION['user_id'];
+        $ret = $this->circlefocusmodel->delete(array('cf_circle_id',$circle_id,'cf_user_id',$user_id));
+        $this->jsonreturn("查询成功", $ret, 0);
+        exit();
+    }
+    
     public function jsonreturn($reason,$result,$error_code)
     {
         $jsonret = json_encode(array(

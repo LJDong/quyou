@@ -79,9 +79,10 @@ class circle extends  CI_Controller{
     }
     public function getcirclebyname()
     {
-        $name = $this->uri->segment(3);
-        $arr = array('circle_name',$name);
-        $ret = $this->circlemodel->getcircle($arr);
+        $name =$_POST['circle_name'];
+        $limit = $_POST['limit'];
+        $page = $_POST['page'];
+        $ret = $this->circlemodel->getcircle(array('circle_name',$name));
         $this->jsonreturn('查询成功',$ret, 0);
         exit;
     }

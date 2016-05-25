@@ -237,8 +237,10 @@
 
         //elementPathEnabled
         //是否启用元素路径，默认是显示
-        ,elementPathEnabled : false
-
+        ,elementPathEnabled : false,
+        "imageCompressEnable" : true, /* 是否压缩图片,默认是true */
+        "imageCompressBorder" : 1000, /* 图片压缩最长边限制 */
+        "imageInsertAlign" :"none" /* 插入的图片浮动方式 */
         //wordCount
         ,wordCount:true          //是否开启字数统计
         ,maximumWords:888       //允许的最大字符数
@@ -295,6 +297,7 @@
         //    removeEmptyline: false,         //去掉空行
         //    textAlign:"left",               //段落的排版方式，可以是 left,right,center,justify 去掉这个属性表示不执行排版
         //    imageBlockLine: 'center',       //图片的浮动方式，独占一行剧中,左右浮动，默认: center,left,right,none 去掉这个属性表示不执行排版
+        
         //    pasteFilter: false,             //根据规则过滤没事粘贴进来的内容
         //    clearFontSize: false,           //去掉所有的内嵌字号，使用编辑器默认的字号
         //    clearFontFamily: false,         //去掉所有的内嵌字体，使用编辑器默认的字体

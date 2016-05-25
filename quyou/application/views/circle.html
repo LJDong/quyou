@@ -1,14 +1,24 @@
-<div class="container">
+<div class="container" >
 	<div class="col-md-8"   id="criclepanel"></div>
 	<div class="col-md-3 col-md-offser-1">
 		<div class="panel panel-default">
 			<div class="panel-body">
+			<div style="margin-bottom:1em">
+			<a class="buttontag" href="###" id="focus_a"></a>
+			</div>
 			<div class="input-group">
-			<input type="text" class="form-control"  placeholder="Search Cirlce">
-			<span class="input-group-btn"><button class="btn btn-default" type="button" ><span class="glyphicon glyphicon-search" aria-hidden="true"></span><span style="text-indent:-99999px;display:inline-block">1</span></button></span>
+			<input type="text" class="form-control"  placeholder="Search Cirlce" id="search_input">
+			<span class="input-group-btn"><button class="btn btn-default" type="button" id="search_btn"><span class="glyphicon glyphicon-search" aria-hidden="true"></span><span style="text-indent:-99999px;display:inline-block">1</span></button></span>
 			</div>
 			<div>
-			<span>我的关注</span>
+			<span style="margin-top:1em;display:block;">我的关注</span>
+			<div style="padding:5px" id="myfocuslist">
+			</div>
+			<span style="margin-top:1em;display:block;">推荐</span>
+			<div style="padding:5px">
+			<a class="buttontag" href="###"></a>
+			</div>
+			<a href="###">查看更多兴趣圈</a>
 			</div>
 			</div>
 		</div>
@@ -16,7 +26,7 @@
 </div>
 <div id='float_bar' class="float_bar">
 <ul>
-	<li class='float_bar_post'><a href='/topic/tonewtopic/3'></a></li>
+	<li class='float_bar_post'><a href='###' ></a></li>
 	<li class='float_bar_refresh'><a href='###'  id='float_bar_refresh_a'></a></li>
 	<li class='float_bar_top'><a href='#'></a></li>
 </ul>
@@ -36,11 +46,48 @@
 		</div>
 	</div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">兴趣圈搜索结果</h4>
+      </div>
+      <div class="modal-body" id="modal-content">
+      <div class="list-group" id="search_cirlce_list">
+      </div>
+      </div>
+      <div class="modal-footer">
+      <!-- <nav>
+      <ul class="pager"> 
+      <li><a href="###" id="previouspage">Previous</a></li>
+      <li><a href="###" id="nextpage">Next </a></li>
+      </ul>
+      </nav> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <script>
 $(document).ready(function(){
+	var circle_name = '';
+	var limit  = 100;
+	var circle_id_arr = [];
 	var circle_id = '<?php echo $circle_id;?>';
+	if(circle_id == '')
+	{
+		$('.float_bar_post').css('display','none');
+	}
+	else
+	{
+		$('.float_bar_post').find('a').attr('href','/topic/tonewtopic/'+circle_id);
+	}
 	var getajax = $.ajax({
-		url:'/topic/getmytopic/'+circle_id,
+		url:'/topic/gettopiclist/'+circle_id,
 		data:{},
 		type:"POST",
 		dataType:'json',
@@ -52,6 +99,41 @@ $(document).ready(function(){
 	});
 	$.when(getajax).then(function(){
 		getuser();
+	});
+	var getfocuslistajax = $.ajax({
+		url:'/circlefocus/getcirclelist',
+		data:{},
+		type:'POST',
+		dataType:'json',
+		success:function(data){
+			console.log(data);
+			if(data.result == null)
+			{
+				$("#myfocuslist").append('');
+			}
+			else{
+				for(circle_seq in data.result)
+				{
+					$("#myfocuslist").append('<a class="buttontag" href="/circle/tocircle/'+data.result[circle_seq].circle_id+'">'+data.result[circle_seq].circle_name+'</a>');
+					circle_id_arr.push(data.result[circle_seq].circle_id);
+				}
+			}
+		}
+	});
+	$.when(getfocuslistajax).then(function(){
+		if(circle_id == '')
+		{
+			$("#focus_a").css('display','none');
+		}
+		var isexit = circle_id_arr.indexOf(circle_id);
+		if (isexit > -1)
+		{
+			$("#focus_a").html("已关注");
+		}
+		else{
+			$("#focus_a").html("关注");
+		}
+		
 	});
 	float_barfunc();
 	window.onbeforeunload = function(){
@@ -76,5 +158,85 @@ $(document).ready(function(){
 	        document.body.scrollTop=parseInt(arr[1]);
 	    }
 	}
+	$("#focus_a").click(function(){
+		var focusurl = '/circlefocus/focuscircle';
+		var cancelurl = '/circlefocus/cancelfocus';
+		var url ='';
+		if($("#focus_a").html() == '已关注')
+		{
+			url =cancelurl;
+		}
+		else
+		{
+			url =focusurl;
+		}
+		$.ajax({
+			url:url,
+			data:{circle_id:circle_id},
+			type:"POST",
+			dataType:"json",
+			success:function(data)
+			{
+				console.log(data);
+				if(data.error_code == 0)
+				{
+					window.location.reload(window.location.href);
+				}
+				else if(data.error_code == -1)
+				{
+					alert("请先登陆");
+				}
+			}
+		});
+	});
+	$("#search_btn").click(function(){
+		$("#myModal").modal({
+			show:true
+		});
+		circle_name = $("#search_input").val();
+		searchcirlce(circle_name,limit,0);
+		page = 0;
+	});
+	/* $('#previouspage').click(function(){
+		page--;
+		if(page<0)
+		{
+			page = 0;
+		}
+		searchcirlce(circle_name,limit,page);
+	});
+	$('#nextpage').click(function(){
+		page++;
+		if(page*limit>count)
+		{
+			page = count/limit;
+		}
+		searchcirlce(circle_name,limit,page);
+	}); */
 });
+function searchcirlce(circle_name,limit,page){
+	$.ajax({
+		url:'/circle/getcirclebyname',
+		data:{circle_name:circle_name,limit:limit,page:page},
+		type:'POST',
+		dataType:'json',
+		success:function(data){
+			console.log(data);
+			$("#search_cirlce_list").html('');
+			if(data.result == null)
+			{
+				$("#search_cirlce_list").append('<a class="list-group-item"  href="/circle/tonewcircle/">未搜索到相关兴趣圈，创建<span style="color:blue;font-style:italic">\"'+circle_name+'\"</span>兴趣圈</a>')
+			}
+			else
+			{
+				for(circle_seq in data.result)
+				{
+					circle = data.result[circle_seq];
+					$("#search_cirlce_list").append('<a class="list-group-item" href="/circle/tocircle/'+circle.circle_id+'">'+circle.circle_name+'</a>')
+				}
+			}
+			
+		}
+	});
+}
 </script>

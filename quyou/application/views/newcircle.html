@@ -22,9 +22,9 @@ $(document).ready(function(){
 				 console.log(data);
 				 if(data.error_code == 0)
 			    {
-					 if(data.result == ture)
+					 if(data.result.ret == true)
 					{
-						 
+						 window.location.href="/circle/tocircle/"+data.result.circle_id;
 					 }
 					 else
 					{
