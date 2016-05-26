@@ -1,4 +1,7 @@
-<div class="container">
+<div class="container" style="background-color:white">
+		<div class="col-md-8  col-xs-8 col-sm-8" id='topic_content'>
+		<?php echo $topic[0]["topic_content"];?>
+	  	 </div>
 		<div class="col-md-8  col-xs-8 col-sm-8" id='comments'>
 	    </div>
 	    <div class="col-md-8 col-xs-8 col-sm-8" style="height:400px;padding:20px;margin-bottom:40px" id="commtext">
@@ -35,30 +38,34 @@
 <script>
 $(document).ready(function(){
 	var ue = UE.getEditor('container');
-	var topic_id = '';
+	var topic_id = '<?php echo $topic_id;?>';
 	$("#submitbtn").click(function(){
 		var submiturl='/comment/comment/'+topic_id;
 		$.ajax({
 			url:submiturl,
 			type:'post',
 			dataType:'json',
-			data:{comment:ue.getContent()},
+			data:{comment:ue.getContent(),type:1},
 			success:function(data){
 				console.log(data);
+				if(data.result == true)
+				{
+					window.location.reload(window.location.href);
+				}
 			}
 		});
 	});
 	var  getajax = $.ajax({
 		type:'POST',
-		url:'/topic/gettopic/'+topic_id,
+		url:'/comment/getcomments',
 		dataType:'json',
-		data:{},
+		data:{topic_id:topic_id,type:1},
 		success:function(data){
-			console.log(data);
-			for(comment_seq in data)
+			//console.log(data);
+			for(comment_seq in data.result)
 			{
 				$('#comments').append("<div id='comment"+comment_seq+"'></div>");
-				$('#comment'+comment_seq).createRP(data[comment_seq]);
+				$('#comment'+comment_seq).createRP(data.result[comment_seq]);
 			}
 		}
 	});

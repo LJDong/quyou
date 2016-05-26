@@ -1,4 +1,53 @@
 @CHARSET "UTF-8";
+#topic_content img{
+	max-width:100%;
+}
+#topic_content{
+	padding-top:3em;
+}
+#topic_content img{
+	max-width:100%
+}
+.gallery {
+  width: 30%;
+  padding: 0.5em;
+}
+
+.gallery > div {
+  position: relative;
+  float: left;
+  padding: 5px;
+}
+
+.gallery > div > img {
+  width: 250px;
+  transition: .1s transform;
+  transform: translateZ(0);
+  transform-origin:0 0;
+  /* hack */
+}
+
+.gallery > div:active {
+  z-index: 1;
+}
+
+.gallery > div:active > img {
+  transform: scale(3, 3);
+  transform-origin:0 0;
+  transition: .3s transform;
+}
+
+.cf:before, .cf:after {
+  display: table;
+  content: "";
+  line-height: 0;
+}
+
+.cf:after {
+  clear: both;
+}
+
+
 .warnspan{
 	position:relative;
 	font-size:14px;
@@ -74,6 +123,9 @@
 	display:block;
 	word-break:break-all;
 	word-wrap:break-word;
+}
+.contenttext img {
+	max-width:100%
 }
 .reply{
 	margin-top:1ex;

@@ -71,7 +71,6 @@
   </div>
 </div>
 
-
 <script>
 $(document).ready(function(){
 	var circle_name = '';
@@ -229,11 +228,7 @@ function searchcirlce(circle_name,limit,page){
 			}
 			else
 			{
-				for(circle_seq in data.result)
-				{
-					circle = data.result[circle_seq];
-					$("#search_cirlce_list").append('<a class="list-group-item" href="/circle/tocircle/'+circle.circle_id+'">'+circle.circle_name+'</a>')
-				}
+					$("#search_cirlce_list").append('<a class="list-group-item" href="/circle/tocircle/'+data.result.circle_id+'">'+data.result.circle_name+'</a>')
 			}
 			
 		}

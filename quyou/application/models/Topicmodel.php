@@ -38,9 +38,11 @@ class topicmodel extends CI_Model
     }
     public function gettopic($topic_id)
     {
+        $this->db->select("topic_content,user_id,user_name,topic_id");
         $this->db->where('topic_id',$topic_id);
-        $this->db->select();
-        $query=$this->db->get($this->table);
-        return $query->result;
+        $this->db->from($this->table);
+        $this->db->join("quyouusers","topic.topic_user_id = quyouusers.user_id");
+        $query=$this->db->get();
+        return $query->result_array();
     }
 }

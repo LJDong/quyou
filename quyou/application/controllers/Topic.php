@@ -11,8 +11,11 @@ class topic extends CI_Controller
     public function totopicindex()
     {
         $topic_id = $this->uri->segment(3);
+        $topic = $this->topicmodel->gettopic($topic_id);
+        $data['topic_id'] = $topic_id;
+        $data['topic'] = $topic;
         $this->load->view('templates/header.html');
-        $this->load->view("topic.html");
+        $this->load->view("topic.html",$data);
         $this->load->view('templates/footer.html');
     }
     public function getmytopic()

@@ -11,7 +11,6 @@
 			},
 			fillHtml:function(obj,args){
 				return (function(){
-					console.log(args);
 					var topicurl = "/topic/totopicindex/"+args.topic_id;
 					var circleurl="/circle/tocircle/"+args.circle_id;
 					var userurl="/quyouusers/tousers/"+args.user_id;
@@ -32,7 +31,7 @@
 											+'<div id="container">';
 					 if(args.topic_firstimg != '')
 					 {
-						 html  = html +'<div>'+args.topic_subcontent+'</div>'+'<a id="max_img'+args.topic_id+'" href="'+args.topic_firstimg+'"><img  src="'+args.topic_firstimg+'" style="width:30%;padding:1em"/></a>';
+						 html  = html +'<div>'+args.topic_subcontent+'</div>'+'<div class="gallery cf"><div><img  src="'+args.topic_firstimg+'" /></div></div>';
 					 }
 					 else
 					{
@@ -49,16 +48,6 @@
 											+'</div>'	
 											+'</div>';
 						obj.append(html);
-						 if(args.topic_firstimg != '')
-						{
-							 $("#max_img"+args.topic_id).imgbox({
-								 'speedIn'		: 0,
-									'speedOut'		: 0,
-									'alignment'		: 'center',
-									'overlayShow'	: true,
-									'allowMultiple'	: false
-							 });
-						}
 				})();
 			},
 			bindEvent:function(obj,args){
@@ -117,7 +106,7 @@ function  getuser(){
 		timer = setTimeout(function(){
 			$('#userpop').css({
 				'display':'none',
-			})},600);
+			})},300);
 	});
 };
 (function($){
@@ -130,7 +119,16 @@ function replydiv(replys,comment_id)
 	for(reply_seq in replys)
 	{
 		var reply = replys[reply_seq];
-		replyhtml +='<div class="col-md-12 col-xs-12 col-sm-12 reply" id="'+reply.reply_id+'">';
+		var reply_time = new Date(reply.reply_time*1000);
+		reply_time = reply_time.toLocaleTimeString();
+		if(reply_seq<3)
+		{
+			replyhtml +='<div class="col-md-12 col-xs-12 col-sm-12 reply" id="replys'+comment_id+'seq'+reply_seq+'">';
+		}
+		else
+		{
+			replyhtml +='<div class="col-md-12 col-xs-12 col-sm-12 reply" id="replyseq'+reply_seq+'" style="display:none">';
+		}
 		replyhtml +='<div class="row">';
 		replyhtml +='<div class="col-md-2 col-xs-2 col-sm-2">';
 		replyhtml +='<div style="text-align:right">';
@@ -142,7 +140,7 @@ function replydiv(replys,comment_id)
 		replyhtml +=reply.user_name;
 		replyhtml +='</a>';
 		replyhtml +='<span style="float:left">回复</span><a class="username getuser"  href="'+userurl+reply.to_user_id+'" value="'+reply.to_user_id+'">'+reply.to_user_name+'</a>';
-		replyhtml +='<span class="time" >'+reply.reply_time+'</span>';
+		replyhtml +='<span class="time" >'+reply_time+'</span>';
 		replyhtml+='<a class="replya" href="###"  comment_id="'+comment_id+'" user_id="'+reply.user_id+'" user_name="'+reply.user_name+'">回复<a>';
 		replyhtml +='</div>';
 		replyhtml +='<div class="col-md-10 col-sm-10 col-xs-10">';
@@ -167,6 +165,7 @@ function replydiv(replys,comment_id)
 					},
 					fillHtml:function(obj,args){
 						return (function(){
+							console.log(args);
 							var userurl="/quyouusers/tousers/";
 							var replyhtml = '<div class="row replydiv" id="'+args.comment_id+'">';
 							replyhtml +='<div class="line"></div>';
@@ -197,7 +196,24 @@ function replydiv(replys,comment_id)
 						//console.log(obj.find('a.morereply').html());
 						return (function(){
 							obj.on("click","a.morereply",function(){
-								console.log(123);
+								console.log($(this).html());
+								if($(this).html() == '查看更多回复')
+								{
+									$("#replys"+args.comment_id).find(".reply").each(function(){
+										$(this).css("display","block");
+									});
+									$(this).html("收起回复");
+								}
+								else if($(this).html() == '收起回复')
+								{
+									var replyarr = $("#replys"+args.comment_id).find(".reply");
+									var length= replyarr.length;
+									for(var i=3;i<length;i++)
+									{
+										$(replyarr[i]).css('display','none');
+									}
+									$(this).html("查看更多回复");
+								}
 							});
 							/*obj.on("click","a.replya",function(){
 								console.log(123);
@@ -212,30 +228,37 @@ function replydiv(replys,comment_id)
 
 function onreply()
 {
-	$('.replya').each(function(){
+	$('.replya').each(function(k,v){
 		var obj = $(this);
 		var comment_id = obj.attr('comment_id');
 		var user_id = obj.attr('user_id');
 		var user_name = obj.attr('user_name');
-		
 		obj.on('click',function(event){
+			$("#replypop").css('width',$(".container").width()/12*8);
 			$('#user_name_reply').html(user_name);
 			$('#replyinput').val('');
+			document.getElementById("replyinput").focus(); 
+			$('#replyinput').attr('comment_id',comment_id);
+			$("#replyinput").attr("user_id",user_id);
+			$("#replyinput").attr("user_name",user_name);
 			$('#replypop').css({
 				'top':(obj.offset().top+58)+'px',
 			});
 			$('#replypop').toggle();
 		});
-		$('#replybtn').on('click',function(){
-			$.ajax({
-				url:'/reply/toreply',
-				type:'POST',
-				dataType:'ajax',
-				data:{reply:$('#replyinput').val(),to_user_id:user_id},
-				success:function(data){
-					console.log(data);
-				}
-			});
+	});
+	$('#replybtn').on('click',function(){
+		var comment_id = $('#replyinput').attr('comment_id');
+		var user_id = $('#replyinput').attr('user_id');
+		var user_name = $('#replyinput').attr('user_name');
+		$.ajax({
+			url:'/reply/toreply',
+			type:'POST',
+			dataType:'json',
+			data:{content:$('#replyinput').val(),to_user_id:user_id,comment_id:comment_id},
+			success:function(data){
+				window.location.reload(window.location.href);
+			}
 		});
 	});
 }
