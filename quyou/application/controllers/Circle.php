@@ -8,6 +8,23 @@ class circle extends  CI_Controller{
         $this->load->library("session");
         $this->load->model("circlemodel");
     }
+    
+    public function getcircledetail()
+    {
+        $circle_id = $_POST['circle_id'];
+        $user_id = $_SESSION['user_id'];
+        if(isset($user_id))
+        {
+            $ret =$this->circlemodel->getcircledetail($circle_id,$user_id);
+            $this->jsonreturn("查询成功", $ret, 0);
+        }
+        else
+        {
+            $this->jsonreturn("未登录", array(), -1);
+        }
+    }
+    
+    
     public function tocircle()
     {
         $circle_id = $this->uri->segment(3);
@@ -17,6 +34,14 @@ class circle extends  CI_Controller{
         $this->load->view("templates/header.html");
         $this->load->view("circle.html",$data);
         $this->load->view("templates/footer.html");
+    }
+    public function tocircle_mobile()
+    {
+        $circle_id = $this->uri->segment(3);
+        $data = array(
+            'circle_id'=> $circle_id
+        );
+        $this->load->view("tocircle_mobile.html",$data);
     }
     public function getcirclelist()
     {
@@ -86,6 +111,12 @@ class circle extends  CI_Controller{
         $this->jsonreturn('查询成功',$ret, 0);
         exit;
     }
+    public function getcirclebytuijian()
+    {
+        $ret = $this->circlemodel->getcircletuijian(4,0);
+        $this->jsonreturn('查询成功',$ret, 0);
+        exit;
+    }
     public function getcirclebyuser_id()
     {
         $name = $this->uri->segment(3);
@@ -94,4 +125,12 @@ class circle extends  CI_Controller{
         $this->jsonreturn('查询成功',$ret, 0);
         exit;
     }
+    
+    public function circle_mobile()
+    {
+        $this->load->view("circle_mobile.html");
+    }
+    
+    
+    
 }

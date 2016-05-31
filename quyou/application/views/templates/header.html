@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>趣友</title>
 	<link rel='stylesheet' href="/aplugin/bootstrap/css/bootstrap.min.css">
-	<link rel='stylesheet' href="/aplugin/css/lanrenzhijia.css">
 	<link rel='stylesheet' href='/aplugin/css/quyoupublic.css'>
 	<script  src='/aplugin/js/jquery-1.12.2.js'></script>
 	<script src='/aplugin/js/quyou.js'></script>
@@ -13,13 +12,12 @@
 	<script src='/aplugin/js/quyou.js'></script>
 	<script type='text/javascript' src='/aplugin/ueditor/ueditor.config.js'></script>
 	<script type='text/javascript' src='/aplugin/ueditor/ueditor.all.js'></script>
-	
   </head>
   <body class="bodybackground">
-<nav class="navbar navbar-default">
+<nav class="navbar navbar-default quyou-self-header">
 	<div class="container-fluid">
 		<div class="navbar-header">
-			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar-collapse-head" aria-expanded="false">
+			<button type="button" class="navbar-toggle collapsed " data-toggle="collapse" data-target="#bs-navbar-collapse-head" aria-expanded="false">
 			<span class="sr-only"></span>
 			<span class="icon-bar"></span>
 			<span class="icon-bar"></span>
@@ -29,10 +27,9 @@
 		</div>
 		<div class="collapse navbar-collapse" id="bs-navbar-collapse-head">
 			<ul class = "nav navbar-nav">
-				<li ><a href="###">主页</a></li>
-				<li ><a href="###">影视</a></li>
-				<li><a href="###">音乐</a></li>
-				<li><a href="###">读书</a></li>
+				<li ><a href="/movie/tomovieindex">影视</a></li>
+				<li><a href="/music/tomusicindex">音乐</a></li>
+				<li><a href="/book/tobookindex">读书</a></li>
 				<li><a href="/circle/tocircle">圈</a></li>
 			</ul>
 			<div id="beforelogin"  class="navbar-right"  style="display:none">
@@ -47,16 +44,70 @@
 		   					<li><a href='###'  id='logout'>退出</a></li>
 		   				</ul>
 		   			</li>
-		   	    	<li><a href="###" id='message'>消息<span class="badge">11</span></a></li>
+		   	    	<li><a href="###" id='message'>消息<span class="badge"></span></a></li>
 		   	   </ul>
 		   	</div>
 		</div>
 	</div>
 </nav>
+
+<div class="modal fade" id="chatModal" tabindex="-1" role="dialog" aria-labelledby="chatModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="chatModalLabel">私聊</h4>
+      </div>
+      <div class="modal-body" id="modal-content_chat">
+      <div style="width:30%px;display:inline-block;background-color:white;height:80%;float:left;">
+      <ul class="list-group" id="friends_list_ul">
+		</ul>
+	</div>
+      <div class="list-group"  style="margin-left:2em;float:left;dispaly:inline-blcok;width:70%;height:80%;background-color:white">
+      <div id="chat_body" style="width:90%;height:80%;border:1px solid #888;margin-bottom:2em">
+      </div>
+      <div class="input-group">
+			<span class="input-group-addon" id='modal_to_user_name'></span>
+			<input class="form-control"  type="text" id="modal_chat_content"> 
+			<span class="input-group-btn"><button class="btn btn-default" type="button" id='chat_btn'>发送</button></span>
+		</div>
+      </div>
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
+
  $(document).ready(function()
 {
+	 $('#message').click(function(){
+		 $("#chatModal").modal({
+				show:true
+			});
+	 });
+	 $.ajax({
+		 url:'/friends/getfriendslist',
+		 data:{},
+		 dataType:'json',
+		 type:'post',
+		 success:function(data){
+			 friends_list = data.result;
+			 var html = '';
+			 for(var seq in data.result)
+			{
+				 html+='<li class="list-group-item"><a href="###" onclick="chatuserid(\''+data.result[seq].friends2_user_id+'\',\''+data.result[seq].friends2_user_name+'\')">'+data.result[seq].friends2_user_name+'<span id="num'+data.result[seq].friends2_user_id+'" class="badge"></span></a></li>'
+			 }
+			 $("#friends_list_ul").append(html);
+			 console.log(data);
+		 }
+	 });
 	 var user_id = '';
+	 $("#userinfo").click(function(){
+		 window.location.href="/quyouusers/touserinfo";
+	 });
 	 $("#loginbtn").click(function(){
 		 window.location.href="/quyouusers/tologin";
 	 });
@@ -78,6 +129,41 @@
 	$('#userinfo').click(function(){
 		 window.location.href='/quyouusers/touserinfo/'+user_id;
 	 });
+	var socket = new WebSocket("ws://localhost:9501");
+	 socket.onmessage = function(event)
+	 {
+		 data = JSON.parse(event.data);
+		 console.log(data);
+		 if(data.header == 'state')
+		{
+			 user_id = $('#chat_btn').attr('user_id');
+			 var jsonobj  = {header:'receviemessage',from_user_id:user_id};
+			 var string = JSON.stringify(jsonobj);
+			 socket.send(string);
+		 }
+		 if(data.header == 'num')
+		 {
+			 $('#num'+data.from_user_id).html(data.num);
+		 }
+		 if(data.header == 'chat')
+		{
+			 $("#chat_body").append('<div><span class="chatname">'+data.user_name+'</span><span class="chatcontent">:'+data.content+'</span></div>');
+		 }
+	 }
+	 socket.onopen = function(event){
+		 socket.send("i am the client");
+	 }
+	 $('#chat_btn').click(function(){
+		 content = $("#modal_chat_content").val();
+		 user_name = $('#chat_btn').attr('user_name');
+		 user_id = $('#chat_btn').attr('user_id');
+		 //console.log(user_name+user_id);
+		 var jsonobj  = {header:'sendmessage',to_user_id:user_id,user_name:user_name,content:content};
+		 var string = JSON.stringify(jsonobj);
+		 $("#chat_body").append('<div><span class="chatname">'+user_name+'</span><span class="chatcontent">:'+content+'</span></div>');
+		  socket.send(string);
+	 });
+	 
 	 var getuser = $.ajax({
 		 url:'/quyouusers/getloginstate',
 		 data:'',
@@ -96,6 +182,9 @@
 				 $('#afterlogin').css('display','block');
 				 $('#user_name').html(data['result']['user_name']);
 				 user_id = data['result']['user_id'];
+				 var jsonobj  = {header:'login',user_id:user_id};
+				var string = JSON.stringify(jsonobj);
+				socket.send(string);
 		    }
 		 }
 	 });
@@ -110,13 +199,12 @@
 			 }
 		 });
 	 });
-	 var socket = new WebSocket("ws://localhost:9501");
-	 socket.onmessage = function(event)
-	 {
-		 console.log(event.data);
-	 }
-	 socket.onopen = function(event){
-		 socket.send("i an the client");
-	 }
  });
+ function chatuserid(user_id,user_name)
+ {
+	 $('#chat_body').html('');
+	 $('#chat_btn').attr('user_id',user_id);
+	 $('#chat_btn').attr('user_name',user_name);
+	 $("#modal_to_user_name").html(user_name);
+ }
 </script>

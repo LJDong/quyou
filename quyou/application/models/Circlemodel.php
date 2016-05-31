@@ -12,6 +12,25 @@ class circlemodel extends CI_Model
         $circle_id = $this->db->insert_id();
         return array('circle_id'=>$circle_id,'ret'=>$ret);
     }
+    public function getcircledetail($circle_id,$user_id){
+        $this->db->from('circle');
+        $this->db->where('circle_id',$circle_id);
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $this->db->where('cf_circle_id',$circle_id);
+        $this->db->where('cf_user_id',$user_id);
+        $query = $this->db->get('circle_focus');
+        $iscf = $query->result_array();
+        if(count($iscf) != 0)
+        {
+            $result[0]['iscf']=true;
+        }
+        else
+        {
+            $result[0]['iscf']=false;
+        }
+        return $result;
+    }
     public function getcircle($arr)
     {
         $ret = $this->db->where($arr[0],$arr[1]);
@@ -19,6 +38,16 @@ class circlemodel extends CI_Model
         $row = $query->row_array();
         return $row;
     }
+    
+    public function getcircletuijian($limit,$page)
+    {
+        $this->db->order_by('circle_create_time','desc');
+        $this->db->limit($limit,$limit*$page);
+        $query = $this->db->get($this->table);
+        $row = $query->result_array();
+        return $row;
+    }
+    
     public function updatecircle($arr,$circle_id)
     {
         $this->db->where('circle_id',$circle_id);

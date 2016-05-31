@@ -24,14 +24,21 @@ class topicmodel extends CI_Model
         $ret = $this->db->update($this->table,$arr);
         return $ret;
     }
-    public function gettopiclist($arr)
+    public function gettopiclist($arr,$limit=8,$page=0)
     {
-        $this->db->where($arr[0],$arr[1]);
+        if($arr[1] == null)
+        {
+            
+        }
+        else {
+            $this->db->where($arr[0],$arr[1]);
+        }
         $this->db->select("topic_id,topic_name,topic_subcontent,topic_firstimg,topic_last_time,topic_comment_num as topic_num,circle_id,circle_name,user_logo_url as user_logo,user_name,user_id");
         $this->db->from($this->table);
         $this->db->join('circle','topic.topic_circle_id = circle.circle_id');
         $this->db->join('quyouusers','topic.topic_user_id = quyouusers.user_id');
         $this->db->order_by('topic_last_time','desc');
+        $this->db->limit($limit,$page*$limit);
         $query = $this->db->get();
         $arr = $query->result_array();
         echo json_encode($arr);exit;

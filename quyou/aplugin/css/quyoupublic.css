@@ -5,14 +5,18 @@
 #topic_content{
 	padding-top:3em;
 }
-#topic_content img{
-	max-width:100%
-}
 .gallery {
   width: 30%;
   padding: 0.5em;
 }
-
+.chatname{
+	display:block;
+}
+.chatcontent{
+	display:block;
+	background-color:#D8D8D8;
+	font-size:1.3em
+}
 .gallery > div {
   position: relative;
   float: left;
@@ -125,7 +129,8 @@
 	word-wrap:break-word;
 }
 .contenttext img {
-	max-width:100%
+	max-width:400px;
+	max-height:400px;
 }
 .reply{
 	margin-top:1ex;
@@ -161,9 +166,20 @@
 	border-radius:0.3em;
 	line-height:1.8em;
 	text-align:center;
+	margin:0.2em;
 }
+
+.quyou-self-header
+{  
+      filter:alpha(opacity=50);  
+      -moz-opacity:0.5;  
+      -khtml-opacity: 0.5;  
+      opacity: 0.5;  
+}   
+
 .bodybackground{
 	background-color:#E8E8E8;
+	background-image:url('/aplugin/picture/pack3.jpg');
 }
 .float_bar_post  a{
 	background-position:-220px -110px;
@@ -183,3 +199,75 @@
 .float_bar_top a:hover{
 	background-position:-165px -110px;
 }
+.pd_main *{
+	margin:0px;
+	padding:0px;
+}
+.pd_main a{
+text-decoration:none;
+}
+.pd_main{
+	position:relative;
+	float:left;
+}
+.box{
+	padding:0.5em 0 0 0.5em ; 
+	float:left !important	;
+	
+	 word-wrap: break-word;
+}
+.detaildiv
+{
+	width:150px;
+	word-wrap: break-word;
+}
+.boxbody{
+	/* display:inline-block; */
+	padding:10px;
+	border:0px solid #000;
+	box-shadow:5px 5px 10px #888888;
+	background-color:white;
+	height:400px;
+}
+
+.imgdiv img{
+	width:150px;
+	padding:10px;
+}
+
+#modal-warn:first-letter{
+	fon-size:1.3em;
+	font-weight:bold;
+}
+
+
+
+#rRightDown,#rLeftDown,#rLeftUp,#rRightUp,#rRight,#rLeft,#rUp,#rDown{
+	position:absolute;
+	background:#FFF;
+	border: 1px solid #333;
+	width: 6px;
+	height: 6px;
+	z-index:500;
+	font-size:0;
+	opacity: 0.5;
+	filter:alpha(opacity=50);
+}
+
+#rLeftDown,#rRightUp{cursor:ne-resize;}
+#rRightDown,#rLeftUp{cursor:nw-resize;}
+#rRight,#rLeft{cursor:e-resize;}
+#rUp,#rDown{cursor:n-resize;}
+
+#rLeftDown{left:-4px;bottom:-4px;}
+#rRightUp{right:-4px;top:-4px;}
+#rRightDown{right:-4px;bottom:-4px;background-color:#00F;}
+#rLeftUp{left:-4px;top:-4px;}
+#rRight{right:-4px;top:50%;margin-top:-4px;}
+#rLeft{left:-4px;top:50%;margin-top:-4px;}
+#rUp{top:-4px;left:50%;margin-left:-4px;}
+#rDown{bottom:-4px;left:50%;margin-left:-4px;}
+
+#bgDiv{width:300px; height:300px; border:1px solid #666666; position:relative;}
+#dragDiv{border:1px dashed #fff; width:100px; height:100px; top:50px; left:50px; cursor:move; }
+

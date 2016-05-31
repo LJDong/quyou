@@ -14,16 +14,16 @@
 	width:100%
 }
 </style>
-<div class="mandiv container" >
+<div class="mandiv container"  style="padding-bottom:10em">
 <div class="line"></div>
 <div class="title"></div>
 <div class="col-md-6 col-md-offset-3">
 <form action="/quyouusers/register" method="post"  id="submitform">
-<div class="form-group"><span>邮箱</span><input name="email" id="email" type="text" placeholder="邮箱" class="form-control"></div>
-<div class="form-group"><span>验证码</span><input name="capture" id="capture" type="text" class="form-control"><a href='###'  id='getemailcapture'>获取邮箱验证码</a></div>
-<div class="form-group"><span>昵称</span><input name="name" id="name" type="text" placeholder="昵称" class="form-control"></div>
-<div class="form-group"><span>密码</span><input name="password" id="password" type="password" placeholder="密码" class="form-control"></div>
-<div class="form-group"><span>确认密码</span><input name="repassword" id="repassword" type="password" placeholder="确认密码" class="form-control"></div>
+<div class="form-group"><span>邮箱</span><input name="email" id="regemail" type="text" placeholder="邮箱" class="form-control"></div>
+<div class="form-group"><span>验证码</span><input name="capture" id="regcapture" type="text" class="form-control"><a href='###'  id='getemailcapture'>获取邮箱验证码</a></div>
+<div class="form-group"><span>昵称</span><input name="name" id="regname" type="text" placeholder="昵称" class="form-control"></div>
+<div class="form-group"><span>密码</span><input name="password" id="regpassword" type="password" placeholder="密码" class="form-control"></div>
+<div class="form-group"><span>确认密码</span><input name="repassword" id="regrepassword" type="password" placeholder="确认密码" class="form-control"></div>
 </form>
 <button  id="subbutton" class="btn btn-default">提交</button>
 </div>
@@ -34,7 +34,7 @@ $(document).ready(function(){
 	$("#getemailcapture").click(function(){
 		var clickflag = false;
 		var reg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
-		var vemail = reg.test($("#email").val());
+		var vemail = reg.test($("#regemail").val());
 		if(vemail == false)
 		{
 			alert("邮箱输入格式不正确");
@@ -45,7 +45,7 @@ $(document).ready(function(){
 			url:verityemailurl,
 			type:'POST',
 			dataType:'json',
-			data:{email:$("#email").val()},
+			data:{email:$("#regemail").val()},
 			success:function(data){
 				clickflag = data.result.code;
 				if(data.result.code ==  false)
@@ -64,7 +64,7 @@ $(document).ready(function(){
 				url:getemailurl,
 				type:'POST',
 				dataType:'json',
-				data:{email:$('#email').val()},
+				data:{email:$('#regemail').val()},
 				success:function(data){
 					console.log(data);
 					if(data.error_code == true)
@@ -86,7 +86,7 @@ $(document).ready(function(){
 			url:verityturl,
 			type:"POST",
 			dataType:'json',
-			data:{capture:$("#capture").val()},
+			data:{capture:$("#regcapture").val()},
 			success:function(data){
 				console.log(data);
 				verityret = data.result.code;
@@ -99,17 +99,17 @@ $(document).ready(function(){
 				alert("邮箱验证码不正确");
 				return;
 			}
-			if($("#name").val() == null  || $("#name").val() == '')
+			if($("#regname").val() == null  || $("#regname").val() == '')
 			{
 				alert("昵称不能为空");
 				return;
 			}
-			if($("#password").val() == null || $("#password").val()== '')
+			if($("#regpassword").val() == null || $("#regpassword").val()== '')
 			{
 				alert("密码不能为空");
 				return;
 			}
-			if($("#password").val()  !=  $("#repassword").val())
+			if($("#regpassword").val()  !=  $("#regrepassword").val())
 			{
 				alert("两次输入密码不一致");
 				return;
@@ -120,7 +120,10 @@ $(document).ready(function(){
 				dataType:'HTML',
 				data:$("#submitform").serialize(),
 				success:function(data){
-					console.log(data);
+					if(data == 1)
+					{
+						window.location.href="/circle/tocircle"
+					}
 				}
 			});
 		});

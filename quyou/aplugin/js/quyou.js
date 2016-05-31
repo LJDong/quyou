@@ -19,7 +19,7 @@
 					 var html = '<div class="panel panel-default"  id="panel'+args.topic_id+'">'
 											+'<div class="panel-header">'
 											+'<div class="row">'
-											+'<div class="col-md-1 col-xs-1 col-sm-1"><a href="'+userurl+'" ><img src="'+args.user_logo+'"   style="width:38px;height:38px;" class="userlogo getuser"  value="'+args.user_id+'"></a></div>'
+											+'<div class="col-md-1 col-xs-1 col-sm-1"><a href="'+userurl+'" ><img src="'+args.user_logo+'"   style="width:38px;height:38px;margin-left:5px" class="userlogo getuser"  value="'+args.user_id+'"></a></div>'
 											+'<div class="col-md-10 col-xs-10 col-sm-10">'
 											+'<div class="col-md-12 col-xs-12 col-sm-12"><a class="subnamespan getuser" style="color:#787878" value="'+args.user_id+'" href="'+userurl+'">'+args.user_name+'</a></div>'
 											+'<div class="col-md-8 col-xs-8 col-sm-8"><a href="'+topicurl+'" class="topicurl"><strong id="subtitlespan" >'+args.topic_name+'</strong></a></div>'		
@@ -42,7 +42,8 @@
 											+'<div class="panel-footer" style="height:38px">'
 											+'<div class="row">'
 											+'<div class="col-md-1 col-xs-1 col-sm-1"><a href="'+topicurl+'" class="topicurl">进入</a></div>'	
-											+'<div class="col-md-2 col-xs-2 col-sm-2"><a href="'+topicurl+'" class="commenturl"><span id="commentnum">'+args.topic_num+'</span>条评论</a></div>'	
+/*											+'<div class="col-md-2 col-xs-2 col-sm-2"><a href="'+topicurl+'" class="commenturl"><span id="commentnum">'+args.topic_num+'</span>条评论</a></div>'	
+*/											+'<div class="col-md-2 col-xs-2 col-sm-2"></div>'	
 											+'<div class="col-md-5 col-xs-5 col-sm-5  col-md-offset-4 col-xs-offset-4 col-sm-offset-4"  style="color:#989898"><span>最后回复时间：</span><span class="time">'+topic_last_time+'</span></div>'	
 											+'</div>'		
 											+'</div>'	
@@ -60,24 +61,113 @@
 	}
 })(jQuery);
 
-var userarray ={};
-var timer = null;
 
+(function($){
+	var tp = {
+			init:function(obj,args){
+				return (function(){
+					tp.fillHtml(obj,args);
+					tp.bindEvent(obj,args);
+				})();
+			},
+			fillHtml:function(obj,args){
+				return (function(){
+					var topicurl = "/topic/topic_mobile/"+args.topic_id;
+					var circleurl="/circle/tocircle/"+args.circle_id;
+					var userurl="/quyouusers/tousers/"+args.user_id;
+					var topic_last_time = new Date(args.topic_last_time*1000);
+					topic_last_time = topic_last_time.toLocaleTimeString();
+					 var html = '<div class="panel panel-default"  id="panel'+args.topic_id+'">'
+											+'<div class="panel-header">'
+											+'<div class="row">'
+											+'<div class="col-md-1 col-xs-1 col-sm-1"><img src="'+args.user_logo+'"   style="width:38px;height:38px;margin-left:5px" class="userlogo getuser"  value="'+args.user_id+'"></div>'
+											+'<div class="col-md-10 col-xs-10 col-sm-10">'
+											+'<div class="col-md-12 col-xs-12 col-sm-12"><a class="subnamespan getuser" style="color:#787878" value="'+args.user_id+'" href="'+userurl+'">'+args.user_name+'</a></div>'
+											+'<div class="col-md-8 col-xs-8 col-sm-8"><a href="'+topicurl+'" class="topicurl"><strong id="subtitlespan" >'+args.topic_name+'</strong></a></div>'		
+											+'</div>'		
+											+'</div>'
+											+'</div>'
+											+'<div class="panel-body">'
+											+'<div id="container">';
+					 if(args.topic_firstimg != '')
+					 {
+						 html  = html +'<div>'+args.topic_subcontent+'</div>'+'<div><div><img  src="'+args.topic_firstimg+'" / style="width:100%"></div></div>';
+					 }
+					 else
+					{
+						 html =html+args.topic_subcontent;
+					}
+					 html = html+'</div>'
+											+'</div>'
+											+'<div class="panel-footer" style="height:38px">'
+											+'<div class="row">'
+											+'<div class="col-md-12 col-xs-12 col-sm-12"  style="color:#989898"><span>最后回复时间：</span><span class="time">'+topic_last_time+'</span></div>'	
+											+'</div>'		
+											+'</div>'	
+											+'</div>';
+						obj.append(html);
+				})();
+			},
+			bindEvent:function(obj,args){
+				return (function(){
+				})();
+			}
+	}
+	$.fn.createTP_mobile = function(options){
+		tp.init(this,options);
+	}
+})(jQuery);
+
+
+var userarray =[];
+var timer = null;
+var friends_list = null;
 function getuserinfo(user_id)
 {
-	var getuserinfourl = '/quyouusers/getuserinfo/'+user_id;
+	var getuserinfourl = '/quyouusers/getuserinfo/';
 	if(userarray[user_id] == null)
 	{
 		$.ajax({
-			url:getuserinfo,
-			data:{},
+			url:getuserinfourl,
+			data:{user_id:user_id},
 			type:"POST",
 			dataType:'json',
 			success:function(data){
-				console.log(data.userinfo);
-				userarray[user_id]=data.userinfo;
+				console.log(data.result);
+				userarray[user_id]=data.result;
+				$("#imguserpop").attr('src',data.result[0].user_logo_url);
+				$("#name_userpop").html(data.result[0].user_name);
+				$("#addfriends").attr('user_id',data.result[0].user_id);
+				for(var friendsseq in friends_list)
+				{
+						if(friends_list[friendsseq].friends2_user_id == user_id)
+						{
+							$("#addfriends").html('私信');
+						}
+						else
+						{
+							$("#addfriends").html('加好友');
+						}
+				}
 			}
 		});
+	}
+	else
+	{
+		$("#imguserpop").attr('src',userarray[user_id].user_logo_url);
+		$("#name_userpop").html(userarray[user_id].user_name);
+		$("#addfriends").attr('user_id',userarray[user_id].user_id);
+		for(var friendsseq in friends_list)
+		{
+				if(friends_list[friendsseq].friends2_user_id == user_id)
+				{
+					$("#addfriends").html('私信');
+				}
+				else
+				{
+					$("#addfriends").html('加好友');
+				}
+		}
 	}
 }
 function  getuser(){
@@ -92,6 +182,7 @@ function  getuser(){
 				'left':(obj.offset().left-10)+'px'
 			});
 			clearTimeout(timer);
+			getuserinfo(user_id);
 			//event.stopPropagation();
 		}).on('mouseleave',function(){
 			timer = setTimeout(function(){
@@ -107,6 +198,20 @@ function  getuser(){
 			$('#userpop').css({
 				'display':'none',
 			})},300);
+	});
+	$("#addfriends").click(function(){
+		if($('#addfriends').html() == '加好友')
+		{
+			$.ajax({
+			  url:'/friends/addfriends',
+			  type:'post',
+			  dataType:'json',
+			  data:{user_id:$("#addfriends").attr('user_id')},
+			  success:function(data){
+				  console.log(data);
+			  }
+			});
+		}
 	});
 };
 (function($){
@@ -166,6 +271,8 @@ function replydiv(replys,comment_id)
 					fillHtml:function(obj,args){
 						return (function(){
 							console.log(args);
+							var comm_time = new Date(args.comm_time*1000);
+							comm_time = comm_time.toLocaleTimeString();
 							var userurl="/quyouusers/tousers/";
 							var replyhtml = '<div class="row replydiv" id="'+args.comment_id+'">';
 							replyhtml +='<div class="line"></div>';
@@ -174,7 +281,7 @@ function replydiv(replys,comment_id)
 							replyhtml +='<div class="contenttext">';
 							replyhtml += args.comm_content;
 							replyhtml +='</div>';
-							replyhtml +='<div  style="display:block;text-align:right">回复<span>'+args.replynum+'</span><span  class="time">'+args.comm_time+'</span><a href="###"  class="replya" comment_id="'+args.comment_id+'" user_id="'+args.user_id+'" user_name="'+args.user_name+'">回复</a></div>';
+							replyhtml +='<div  style="display:block;text-align:right">回复<span>'+args.replynum+'</span><span  class="time">'+comm_time+'</span><a href="###"  class="replya" comment_id="'+args.comment_id+'" user_id="'+args.user_id+'" user_name="'+args.user_name+'">回复</a></div>';
 							replyhtml +='<div class="line"></div>';
 							replyhtml +='</div>';
 							replyhtml +='<div>';
@@ -262,6 +369,7 @@ function onreply()
 		});
 	});
 }
+
 /*function getuserpanel(obj)
 {
 	try{

@@ -43,4 +43,17 @@ class quyouusermodel extends CI_Model
             return false;
         }
     }
+    public function update($arr,$warr)
+    {
+        $this->db->where($warr[0],$warr[1]);
+        $ret = $this->db->update($this->table,$arr);
+        return $ret;
+    }
+    public function select($arr)
+    {
+        $this->db->select("user_id,user_name,user_email,user_register_time,user_logo_url,user_sex");
+        $this->db->where($arr[0],$arr[1]);
+        $query = $this->db->get($this->table);
+        return $query->result_array();
+    }
 }
