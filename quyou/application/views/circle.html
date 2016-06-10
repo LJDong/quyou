@@ -3,7 +3,7 @@
 	<div class="col-md-3 col-md-offser-1">
 		<div class="panel panel-default">
 			<div class="panel-body">
-			<div style="margin-bottom:1em">
+			<div style="margin-bottom:1em" id="focus_div">
 			<a class="buttontag" href="###" id="focus_a"></a>
 			</div>
 			<div class="input-group">
@@ -69,10 +69,11 @@ $(document).ready(function(){
 	var circle_name = '';
 	var limit  = 100;
 	var circle_id_arr = [];
-	var circle_id = '<?php echo $circle_id;?>';
+	var circle_id = '<?php echo $circle_id; ?>';
 	if(circle_id == '')
 	{
 		$('.float_bar_post').css('display','none');
+		$('#focus_div').css('display','none');
 	}
 	else
 	{

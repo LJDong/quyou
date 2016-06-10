@@ -45,7 +45,7 @@ class topicmodel extends CI_Model
     }
     public function gettopic($topic_id)
     {
-        $this->db->select("topic_content,user_id,user_name,topic_id");
+        $this->db->select("topic_content,user_id,user_name,topic_id,topic_name");
         $this->db->where('topic_id',$topic_id);
         $this->db->from($this->table);
         $this->db->join("quyouusers","topic.topic_user_id = quyouusers.user_id");

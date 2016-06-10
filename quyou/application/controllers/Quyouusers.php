@@ -16,6 +16,10 @@ class quyouusers extends CI_Controller
         $this->load->view("userinfo.html",$data);
         $this->load->view('templates/footer.html');
     }
+    public function index_mobile()
+    {
+        $this->load->view("index_mobile.html");
+    }
     public function getuserinfo()
     {
         $user_id = $_POST['user_id'];

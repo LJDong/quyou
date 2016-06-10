@@ -341,7 +341,7 @@ function onreply()
 		var user_id = obj.attr('user_id');
 		var user_name = obj.attr('user_name');
 		obj.on('click',function(event){
-			$("#replypop").css('width',$(".container").width()/12*8);
+			$("#replypop").css('width',$(".container").width());
 			$('#user_name_reply').html(user_name);
 			$('#replyinput').val('');
 			document.getElementById("replyinput").focus(); 

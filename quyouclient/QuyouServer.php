@@ -33,15 +33,30 @@ class QuyouServer
     {
         //$serv->push($frame->fd,'hello, i am server');
         $clientmessage =  json_decode($frame->data,true);
+        var_dump($clientmessage);
         $header =$clientmessage['header'];
         if($header == 'login')
         {
-            $isol = $this->redis->hset('loginlist',$clientmessage['user_id'],$frame->fd);
-            $this->redis->hset('logoutlist',$frame->fd,$clientmessage['user_id']);
-            if($isol == true)
-            {
-                //处理推送未读信息数量
-            }
+             $this->redis->hset('loginlist',$clientmessage['user_id'],$frame->fd);
+             $this->redis->hset('logoutlist',$frame->fd,$clientmessage['user_id']);
+             //处理推送未读信息数量
+             $array = $this->redis->getKeys('numfrom*'.'to'.$clientmessage['user_id']);
+             foreach ($array as $key=>$value)
+             {
+                     //推送数量
+                     $num = $this->redis->get($value);
+                     echo 'num'.$num.$value;
+                     $exp = '/numfrom(\d+)to/';
+                     preg_match_all($exp, $value, $arr);
+                     $user_id = $arr[0];
+                     if($user_id == null)
+                     {
+                         continue;
+                     }
+                     else {
+                         $this->serv->push($frame->fd, json_encode(array('header'=>'num','num'=>$num,'from_user_id'=>$user_id)));
+                     }
+             }
         }
         else if($header == 'receviemessage')
         {

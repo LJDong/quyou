@@ -61,6 +61,11 @@ class circle extends  CI_Controller{
         }
         $this->load->view("templates/footer.html");
     }
+    public function tonewcircle_mobile()
+    {
+            $this->load->view("newcircle_mobile.html");
+    }
+    
     public function newcircle()
     {
         //var_dump($_POST);exit;

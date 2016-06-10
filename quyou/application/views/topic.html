@@ -1,4 +1,10 @@
 <div class="container" style="background-color:white">
+		<div class="col-md-8  col-xs-8 col-sm-8" id='topic_name'>
+		<div style='padding:10px;background-color:#E8E8E8;margin:10px;border-radius:5px'>
+		<span style='color:#005196;font-size:2em;font-family: STHeiti,"Microsoft Yahei","Microsoft YaHei",Arial,sans-serif;'>标题：<?php echo $topic[0]["topic_name"];?></span>
+		<span style='color:red;font-family: STHeiti,"Microsoft Yahei","Microsoft YaHei",Arial,sans-serif;'>作者:<?php echo $topic[0]["user_name"];?></span>
+		</div>
+		</div>
 		<div class="col-md-8  col-xs-8 col-sm-8" id='topic_content'>
 		<?php echo $topic[0]["topic_content"];?>
 	  	 </div>

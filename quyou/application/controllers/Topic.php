@@ -34,7 +34,14 @@ class topic extends CI_Controller
         $this->topicmodel->gettopiclist(array('topic_circle_id',$circle_id));
         exit;
     }
-    
+    public function tonewtopic_mobile()
+    {
+        $circle_id = $this->uri->segment(3);
+        $data = array(
+            'circle_id'=>$circle_id
+        );
+        $this->load->view("newtopic_mobile.html",$data);
+    }
     public function tonewtopic()
     {
         $circle_id = $this->uri->segment(3);

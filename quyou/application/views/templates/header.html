@@ -80,7 +80,7 @@
 </div>
 
 <script>
-
+var socket = new WebSocket("ws://localhost:9501");
  $(document).ready(function()
 {
 	 $('#message').click(function(){
@@ -129,7 +129,6 @@
 	$('#userinfo').click(function(){
 		 window.location.href='/quyouusers/touserinfo/'+user_id;
 	 });
-	var socket = new WebSocket("ws://localhost:9501");
 	 socket.onmessage = function(event)
 	 {
 		 data = JSON.parse(event.data);
@@ -206,5 +205,9 @@
 	 $('#chat_btn').attr('user_id',user_id);
 	 $('#chat_btn').attr('user_name',user_name);
 	 $("#modal_to_user_name").html(user_name);
+	 user_id = $('#chat_btn').attr('user_id');
+	 var jsonobj  = {header:'receviemessage',from_user_id:user_id};
+	 var string = JSON.stringify(jsonobj);
+	 socket.send(string);
  }
 </script>
